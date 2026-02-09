@@ -1,10 +1,11 @@
 # IoT Sensor Backend
 
-REST API for ingesting and retrieving IoT sensor temperature data.
+REST API and MQTT subscriber for ingesting and retrieving IoT sensor temperature data.
 
 ## Features
 
-- Ingest sensor temperature readings via POST endpoint
+- Ingest sensor temperature readings via REST API POST endpoint
+- Real-time MQTT subscriber for sensor data from message broker
 - Retrieve latest reading for any device via GET endpoint
 - Input validation and error handling
 - MongoDB Atlas integration for persistent storage
@@ -27,13 +28,21 @@ MONGO_URI=mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/iotSens
 
 ## Usage
 
-Start the server:
+Start the REST API server:
 
 ```bash
 node app.js
 ```
 
 Server runs on `http://localhost:3000`
+
+Optionally, start the MQTT subscriber (in a separate terminal):
+
+```bash
+node mqttSubscriber.js
+```
+
+MQTT subscriber connects to `broker.hivemq.com` and listens for messages on topic pattern `iot/sensor/+/temperature`
 
 ## Data Schema
 
@@ -112,4 +121,52 @@ POST request with missing `deviceId` to demonstrate validation (returns 400 erro
 GET `http://localhost:3000/api/sensor/sensor-01/latest`
 
 ![GET Request](images/GetTesting.png)
+
+## Testing MQTT
+
+### Start MQTT Subscriber
+
+```bash
+node mqttSubscriber.js
+```
+
+Expected output:
+```
+MongoDB connected (MQTT)
+Connected to MQTT broker
+Subscribed to topic: iot/sensor/+/temperature
+```
+
+### Publish Test Message
+
+Using HiveMQ Web Client (https://www.hivemq.com/demos/websocket-client/):
+
+1. Connect to broker:
+   - Host: `broker.hivemq.com`
+   - Port: `8000`
+   - Click Connect
+
+2. Publish message:
+   - Topic: `iot/sensor/sensor-02/temperature`
+   - Message:
+     ```json
+     {
+       "temperature": 28.9
+     }
+     ```
+   - Click Publish
+
+![HiveMQ Web Client](images/HIVEMQ.png)
+
+3. Check terminal output:
+   ```
+   Saved MQTT data for device: sensor-02
+   ```
+
+4. Verify in MongoDB Atlas or via REST API:
+   ```bash
+   curl http://localhost:3000/api/sensor/sensor-02/latest
+   ```
+
+The MQTT subscriber listens on topic pattern `iot/sensor/+/temperature` where `+` is a wildcard matching any deviceId.
 
