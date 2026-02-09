@@ -17,6 +17,8 @@ app.get("/", (req, res) => {
   res.send("Server is running ");
 });
 
+//Post route
+
 app.post("/api/sensor/ingest", async (req, res) => {
     try {
       const { deviceId, temperature, timestamp } = req.body;
@@ -45,6 +47,29 @@ app.post("/api/sensor/ingest", async (req, res) => {
       });
     }
   });
+
+  //Get
+  app.get("/api/sensor/:deviceId/latest", async (req, res) => {
+  try {
+    const { deviceId } = req.params;
+
+    const latestReading = await Sensor.findOne({ deviceId })
+      .sort({ timestamp: -1 });
+
+    if (!latestReading) {
+      return res.status(404).json({
+        error: "No data found for this device"
+      });
+    }
+
+    res.json(latestReading);
+  } catch (error) {
+    res.status(500).json({
+      error: "Internal server error"
+    });
+  }
+});
+
   
 
 mongoose.connect(process.env.MONGO_URI)
