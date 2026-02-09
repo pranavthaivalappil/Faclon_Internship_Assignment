@@ -12,7 +12,7 @@ A Node.js backend service providing REST APIs and an MQTT subscriber for ingesti
 
 ## Installation
 
-Requires Node.js 18+ or 20 LTS.
+Requires Node.js 20.19+ LTS (or Node.js 22+ LTS).
 
 ```bash
 git clone https://github.com/pranavthaivalappil/Faclon_Internship_Assignment.git
