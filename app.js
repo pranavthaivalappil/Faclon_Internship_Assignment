@@ -2,6 +2,8 @@
 
 require("dotenv").config();
 const mongoose = require("mongoose");
+const Sensor = require("./models/Sensor");
+
 const express = require("express");
 
 const app = express();
@@ -14,6 +16,36 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("Server is running ");
 });
+
+app.post("/api/sensor/ingest", async (req, res) => {
+    try {
+      const { deviceId, temperature, timestamp } = req.body;
+  
+      // Validation
+      if (!deviceId || temperature === undefined) {
+        return res.status(400).json({
+          error: "deviceId and temperature are required"
+        });
+      }
+  
+      const sensorData = new Sensor({
+        deviceId,
+        temperature,
+        timestamp: timestamp || Date.now()
+      });
+  
+      await sensorData.save();
+  
+      res.status(201).json({
+        message: "Sensor data ingested successfully"
+      });
+    } catch (error) {
+      res.status(500).json({
+        error: "Internal server error"
+      });
+    }
+  });
+  
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
