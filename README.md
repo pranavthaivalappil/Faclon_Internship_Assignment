@@ -1,6 +1,6 @@
 # IoT Sensor Backend
 
-REST API and MQTT subscriber for ingesting and retrieving IoT sensor temperature data.
+A Node.js backend service providing REST APIs and an MQTT subscriber for ingesting and retrieving IoT sensor temperature data.
 
 ## Features
 
@@ -11,6 +11,8 @@ REST API and MQTT subscriber for ingesting and retrieving IoT sensor temperature
 - MongoDB Atlas integration for persistent storage
 
 ## Installation
+
+Requires Node.js 18+ or 20 LTS.
 
 ```bash
 git clone https://github.com/pranavthaivalappil/Faclon_Internship_Assignment.git
@@ -91,9 +93,7 @@ Response (200):
 }
 ```
 
-## Testing
-
-```
+## Testing REST API
 
 ### Using Postman
 
@@ -163,10 +163,8 @@ Using HiveMQ Web Client (https://www.hivemq.com/demos/websocket-client/):
    Saved MQTT data for device: sensor-02
    ```
 
-4. Verify in MongoDB Atlas or via REST API:
-   ```bash
-   curl http://localhost:3000/api/sensor/sensor-02/latest
-   ```
+4. Verify in MongoDB Atlas or via REST API GET request in Postman:
+   - GET `http://localhost:3000/api/sensor/sensor-02/latest`
 
 The MQTT subscriber listens on topic pattern `iot/sensor/+/temperature` where `+` is a wildcard matching any deviceId.
 
