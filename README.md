@@ -168,3 +168,11 @@ Using HiveMQ Web Client (https://www.hivemq.com/demos/websocket-client/):
 
 The MQTT subscriber listens on topic pattern `iot/sensor/+/temperature` where `+` is a wildcard matching any deviceId.
 
+## License
+
+ISC
+
+## Author
+
+Pranav Thaivalappil  
+[GitHub](https://github.com/pranavthaivalappil)
